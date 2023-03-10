@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,5 +26,22 @@ public class CovidDataApi {
         ResponseEntity<List<Data>> data = restTemplate.exchange(apiPath, HttpMethod.GET, null, new ParameterizedTypeReference<List<Data>>() {});
         if(!data.hasBody()) throw new InternalServiceException(ServiceExceptions.DATA_NOT_FOUND);
         return data.getBody();
+    }
+
+    private Data getDataFromSingleCountry(String country){
+        try{
+            ResponseEntity<Data> data = restTemplate.exchange(apiPath + "/" + country, HttpMethod.GET, null, new ParameterizedTypeReference<Data>() {});
+            return data.getBody();
+        } catch (Exception e){
+            throw new InternalServiceException(ServiceExceptions.DATA_NOT_FOUND);
+        }
+    }
+
+    public List<Data> getDataFromSpecificCountries(String[] countries){
+        List<Data> data = new ArrayList<>();
+        for(String country : countries){
+            data.add(this.getDataFromSingleCountry(country));
+        }
+        return data;
     }
 }
