@@ -15,6 +15,10 @@ public class UserDetailsImpl implements UserDetails {
     private final User user;
     private final PasswordEncoder passwordEncoder;
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getAuthorities().stream()

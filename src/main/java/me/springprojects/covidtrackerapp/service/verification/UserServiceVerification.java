@@ -25,33 +25,41 @@ public class UserServiceVerification {
     private final UserRepository userRepository;
 
     public void verificateInputUserData(UserDTO userDTO){
-        if(userDTO.getUsername() == null
-                || userDTO.getEmail() == null
-                || userDTO.getPassword() == null) throw new InvalidInputDataException(UserExceptions.NOT_ENOUGH_DATA);
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+        String email = userDTO.getEmail();
+        if(username == null || email == null || password == null)
+            throw new InvalidInputDataException(UserExceptions.NOT_ENOUGH_DATA);
 
-        verificateIfUserExists(userDTO.getUsername());
-        verificateUsername(userDTO.getUsername());
-        verificateUserEmail(userDTO.getEmail());
-        verificateUserPassword(userDTO.getPassword());
+        verificateIfUserExists(username);
+        verificateIfEmailExists(email);
+        verificateUsername(username);
+        verificateUserEmail(email);
+        verificateUserPassword(password);
     }
 
-    private void verificateUsername(String name){
-        Matcher match = VALID_USERNAME_PATTERN.matcher(name);
+    public void verificateUsername(String username){
+        Matcher match = VALID_USERNAME_PATTERN.matcher(username);
         if(!match.find()) throw new InvalidInputDataException(UserExceptions.INVALID_USERNAME);
     }
 
-    private void verificateUserEmail(String email){
+    public void verificateUserEmail(String email){
         Matcher match = VALID_EMAIL_PATTERN.matcher(email);
         if(!match.find()) throw new InvalidInputDataException(UserExceptions.INVALID_EMAIL);
     }
 
-    private void verificateUserPassword(String password){
+    public void verificateUserPassword(String password){
         Matcher match = VALID_PASSWORD_PATTERN.matcher(password);
         if(!match.find()) throw new InvalidInputDataException(UserExceptions.INVALID_PASSWORD);
     }
 
-    private void verificateIfUserExists(String username){
+    public void verificateIfUserExists(String username){
         Optional<User> user = userRepository.findUserByUsername(username);
         if(user.isPresent()) throw new InternalServiceException(ServiceExceptions.USER_EXISTS);
+    }
+
+    public void verificateIfEmailExists(String email){
+        Optional<User> user = userRepository.findUserByUserEmail(email);
+        if(user.isPresent()) throw new InternalServiceException(ServiceExceptions.EMAIL_EXISTS);
     }
 }
