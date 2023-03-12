@@ -18,7 +18,8 @@ public class UserController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO){
-        return userService.register(userDTO);
+        UserDTO res = userService.register(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     @GetMapping(path = "/all")

@@ -16,8 +16,8 @@ public class SecurityConfig {
         http.httpBasic().and().authorizeHttpRequests()
                 .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/users/all").hasRole("ADMIN")
-                .requestMatchers("/api/v1/users/**").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/api/v1/covid/data").hasRole("ADMIN")
+                .requestMatchers("/api/v1/users/**").hasRole("USER")
                 .requestMatchers("/api/v1/covid/data/**").hasRole("USER")
                 .and().csrf().disable();
         return http.build();

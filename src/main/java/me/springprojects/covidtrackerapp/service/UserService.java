@@ -11,8 +11,6 @@ import me.springprojects.covidtrackerapp.repository.AuthorityRepository;
 import me.springprojects.covidtrackerapp.repository.UserRepository;
 import me.springprojects.covidtrackerapp.service.helper.UserServiceHelper;
 import me.springprojects.covidtrackerapp.service.verification.UserServiceVerification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -29,7 +27,7 @@ public class UserService {
     private final UserServiceHelper userServiceHelper;
 
     @Transactional(rollbackOn = RuntimeException.class)
-    public ResponseEntity<UserDTO> register(UserDTO userDTO){
+    public UserDTO register(UserDTO userDTO){
         userServiceVerification.verificateInputUserData(userDTO); // verificate user's provided data
         Authority authority = authorityRepository.findAuthorityByName("ROLE_USER")
                                                  .orElseThrow(() -> new InternalServiceException(ServiceExceptions.AUTHORITY_NOT_FOUND)); // get basic authority from the database
@@ -43,7 +41,7 @@ public class UserService {
         authority.getUsers().add(user);
         userRepository.save(user); // save the user in the database
         authorityRepository.save(authority); // save the modified authority in the database
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+        return userDTO;
     }
 
     public List<UserDTO> getUsers(){

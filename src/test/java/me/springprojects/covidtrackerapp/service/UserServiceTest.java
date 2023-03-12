@@ -37,11 +37,11 @@ class UserServiceTest {
         authority.setUsers(new HashSet<>());
         given(authorityRepository.findAuthorityByName(any())).willReturn(Optional.of(authority));
 
-        ResponseEntity<UserDTO> res = userService.register(userDTO);
+        UserDTO res = userService.register(userDTO);
 
         verify(userRepository, times(1)).save(any());
         verify(authorityRepository, times(1)).save(any());
-        assertEquals(HttpStatus.CREATED, res.getStatusCode());
+        assertEquals(res, userDTO);
     }
 
     @Test
